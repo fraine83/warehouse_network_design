@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network Infrastructure – Furniture Repair Shop</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:wght@300;400;600;700&display=swap');
+
+  :root {
+    --bg: #0a0e1a;
+    --panel: #111827;
+    --border: #1e2d45;
+    --accent: #00c8ff;
+    --accent2: #ff6b35;
+    --green: #00e676;
+    --yellow: #ffd600;
+    --text: #cdd6f4;
+    --dim: #6b7a99;
+    --mdf-bg: #0d1f35;
+    --idf-bg: #1a1230;
+    --internet-bg: #0d2a1a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+    padding: 24px;
+  }
+
+  h1 {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.1rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .subtitle {
+    font-size: 0.8rem;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+    margin-bottom: 24px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .diagram-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ── INTERNET LAYER ── */
+  .layer-internet {
+    background: var(--internet-bg);
+    border: 1.5px solid #1a4a2a;
+    border-radius: 12px 12px 0 0;
+    padding: 20px 24px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .layer-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-bottom: 4px;
+  }
+
+  .layer-internet .layer-label { background: #0d3a1e; color: var(--green); border: 1px solid #1a5a2e; }
+  .layer-mdf .layer-label { background: #0a1e35; color: var(--accent); border: 1px solid #1a3a5a; }
+  .layer-idf .layer-label { background: #1a0a2e; color: #b57aff; border: 1px solid #3a1a5a; }
+
+  .isp-row {
+    display: flex;
+    gap: 60px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cloud-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .cloud-icon {
+    width: 80px;
+    height: 48px;
+    position: relative;
+  }
+
+  .cloud-icon svg { width: 100%; height: 100%; }
+
+  .router-row {
+    display: flex;
+    gap: 80px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* ── MDF LAYER ── */
+  .layer-mdf {
+    background: var(--mdf-bg);
+    border: 1.5px solid #1a3a5a;
+    border-top: none;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .core-row {
+    display: flex;
+    gap: 80px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .access-row {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* ── IDF LAYER ── */
+  .layer-idf {
+    background: var(--idf-bg);
+    border: 1.5px solid #3a1a5a;
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  /* ── DEVICE NODES ── */
+  .node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: default;
+    transition: transform 0.2s;
+  }
+
+  .node:hover { transform: translateY(-2px); }
+
+  .node-box {
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    padding: 10px 14px;
+    min-width: 90px;
+    border: 1.5px solid;
+    position: relative;
+  }
+
+  .node-label {
+    font-size: 0.68rem;
+    color: var(--dim);
+    font-family: 'Share Tech Mono', monospace;
+    text-align: center;
+    max-width: 100px;
+  }
+
+  .node-sublabel {
+    font-size: 0.6rem;
+    color: #445;
+    font-family: 'Share Tech Mono', monospace;
+    text-align: center;
+  }
+
+  /* Device types */
+  .router { background: #0a2a10; border-color: var(--green); color: var(--green); }
+  .core-sw { background: #071a30; border-color: var(--accent); color: var(--accent); }
+  .access-sw { background: #1a1000; border-color: var(--yellow); color: var(--yellow); }
+  .access-sw-idf { background: #1a0a28; border-color: #b57aff; color: #b57aff; }
+  .isp-cloud { background: #061a0e; border-color: #2a5a3a; color: #5aaa7a; font-size: 0.65rem; }
+
+  /* Status dot */
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+    position: absolute;
+    top: 6px; right: 6px;
+  }
+
+  .status-dot.backup { background: var(--yellow); box-shadow: 0 0 6px var(--yellow); }
+
+  /* ── SVG CONNECTIONS ── */
+  .connections-svg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  .diagram-container {
+    position: relative;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ── LEGEND ── */
+  .legend {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    padding: 14px 20px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 16px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.72rem;
+    color: var(--dim);
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .legend-line {
+    width: 32px;
+    height: 3px;
+    border-radius: 2px;
+  }
+
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+
+  /* ── PORT COUNTS ── */
+  .port-badge {
+    font-size: 0.58rem;
+    background: #1a2a1a;
+    color: var(--green);
+    border: 1px solid #2a4a2a;
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-family: 'Share Tech Mono', monospace;
+    margin-top: 2px;
+  }
+
+  .port-badge.yellow { background: #1a1a00; color: var(--yellow); border-color: #3a3a00; }
+  .port-badge.purple { background: #1a0a2a; color: #b57aff; border-color: #3a1a5a; }
+
+  .divider-line {
+    height: 0;
+    border-top: 1.5px dashed #1e2d45;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--dim);
+    letter-spacing: 0.15em;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  /* Trunk/uplink lines between layers (visual only) */
+  .inter-layer {
+    display: flex;
+    justify-content: center;
+    gap: 80px;
+    padding: 0;
+    height: 32px;
+    align-items: center;
+    position: relative;
+  }
+
+  .vline {
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--green), var(--accent));
+  }
+
+  .vline-pair {
+    display: flex;
+    gap: 6px;
+    height: 100%;
+  }
+
+  /* ── FLOORPLAN SECTION ── */
+  .floorplan-section {
+    margin-top: 24px;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .floorplan-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .floorplan {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .floor-suite {
+    flex: 1;
+    border: 2px solid;
+    border-radius: 10px;
+    padding: 16px;
+    position: relative;
+  }
+
+  .floor-suite.warehouse {
+    border-color: #1a3a5a;
+    background: #080f1a;
+    flex: 1.4;
+  }
+
+  .floor-suite.storefront {
+    border-color: #2a1a3a;
+    background: #0d0818;
+  }
+
+  .suite-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid;
+  }
+
+  .warehouse .suite-label { color: var(--accent); border-color: #1a3a5a; }
+  .storefront .suite-label { color: #b57aff; border-color: #2a1a3a; }
+
+  .floor-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.72rem;
+    color: var(--dim);
+    margin-bottom: 7px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .floor-icon {
+    width: 8px; height: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .rack-box {
+    margin-top: 14px;
+    padding: 10px;
+    background: #0a1520;
+    border: 1.5px dashed #1a3a5a;
+    border-radius: 6px;
+  }
+
+  .rack-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+
+  .rack-item {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--dim);
+    margin-bottom: 3px;
+    padding-left: 8px;
+    border-left: 2px solid;
+  }
+
+  .rack-item.green { border-color: var(--green); color: #7aba8a; }
+  .rack-item.blue { border-color: var(--accent); color: #7acaff; }
+  .rack-item.yellow { border-color: var(--yellow); color: #aaaa50; }
+
+  /* Cable legend */
+  .cable-note {
+    margin-top: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    color: #445566;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<h1>// Network Infrastructure Design</h1>
+<div class="subtitle">Furniture Repair Shop · Collapsed Core · Dual-ISP Redundancy</div>
+
+<div class="diagram-wrapper">
+
+  <!-- ═══ INTERNET / ISP LAYER ═══ -->
+  <div class="layer-internet">
+    <div class="layer-label">Internet / ISP Layer</div>
+    <div class="isp-row">
+      <div class="node">
+        <div class="node-box isp-cloud">
+          <svg width="44" height="28" viewBox="0 0 44 28" fill="none">
+            <ellipse cx="22" cy="18" rx="18" ry="9" fill="#1a4a2a" stroke="#2a7a4a" stroke-width="1.5"/>
+            <ellipse cx="14" cy="15" rx="9" ry="7" fill="#1a4a2a" stroke="#2a7a4a" stroke-width="1.5"/>
+            <ellipse cx="30" cy="14" rx="8" ry="6" fill="#1a4a2a" stroke="#2a7a4a" stroke-width="1.5"/>
+            <ellipse cx="22" cy="10" rx="10" ry="8" fill="#1a4a2a" stroke="#2a7a4a" stroke-width="1.5"/>
+          </svg>
+          ISP – PRIMARY
+        </div>
+        <div class="node-label">Primary Internet</div>
+        <div class="node-sublabel">Fiber / Cable</div>
+      </div>
+      <div class="node">
+        <div class="node-box isp-cloud">
+          <svg width="44" height="28" viewBox="0 0 44 28" fill="none">
+            <ellipse cx="22" cy="18" rx="18" ry="9" fill="#1a3a1a" stroke="#3a6a3a" stroke-width="1.5" stroke-dasharray="3 2"/>
+            <ellipse cx="14" cy="15" rx="9" ry="7" fill="#1a3a1a" stroke="#3a6a3a" stroke-width="1.5" stroke-dasharray="3 2"/>
+            <ellipse cx="30" cy="14" rx="8" ry="6" fill="#1a3a1a" stroke="#3a6a3a" stroke-width="1.5" stroke-dasharray="3 2"/>
+            <ellipse cx="22" cy="10" rx="10" ry="8" fill="#1a3a1a" stroke="#3a6a3a" stroke-width="1.5" stroke-dasharray="3 2"/>
+          </svg>
+          ISP – BACKUP
+        </div>
+        <div class="node-label">Backup Internet</div>
+        <div class="node-sublabel">DSL / LTE Failover</div>
+      </div>
+    </div>
+
+    <!-- Arrow down to routers -->
+    <div style="display:flex;gap:160px;justify-content:center;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0;">
+        <div style="width:2px;height:20px;background:var(--green);"></div>
+        <div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid var(--green);"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0;">
+        <div style="width:2px;height:20px;background:var(--yellow);border-left:2px dashed var(--yellow);background:none;border-right:none;border-top:none;border-bottom:none;margin-left:-1px;" style="border-left:2px dashed var(--yellow);height:20px;"></div>
+        <div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid var(--yellow);"></div>
+      </div>
+    </div>
+
+    <!-- Routers -->
+    <div class="router-row">
+      <div class="node">
+        <div class="node-box router">
+          <div class="status-dot"></div>
+          <svg width="28" height="20" viewBox="0 0 28 20" fill="none">
+            <rect x="2" y="6" width="24" height="12" rx="3" fill="#0a3a18" stroke="#00e676" stroke-width="1.5"/>
+            <circle cx="7" cy="12" r="2" fill="#00e676"/>
+            <circle cx="14" cy="12" r="2" fill="#00e676"/>
+            <circle cx="21" cy="12" r="2" fill="#00e676"/>
+            <line x1="7" y1="6" x2="5" y2="2" stroke="#00e676" stroke-width="1.5"/>
+            <line x1="14" y1="6" x2="14" y2="2" stroke="#00e676" stroke-width="1.5"/>
+            <line x1="21" y1="6" x2="23" y2="2" stroke="#00e676" stroke-width="1.5"/>
+          </svg>
+          R1 – PRIMARY
+        </div>
+        <div class="node-label">Router 1 (Active)</div>
+        <div class="port-badge">WAN: ISP-1 | LAN → Core</div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:0.6rem;color:#445;letter-spacing:0.1em;">FAILOVER</div>
+        <div style="display:flex;align-items:center;gap:0;">
+          <div style="width:30px;height:1.5px;background:#445;"></div>
+          <div style="font-size:1rem;color:#445;margin:0 4px;">⇄</div>
+          <div style="width:30px;height:1.5px;background:#445;"></div>
+        </div>
+      </div>
+
+      <div class="node">
+        <div class="node-box router" style="border-color:var(--yellow);color:var(--yellow);background:#1a1a00;">
+          <div class="status-dot backup"></div>
+          <svg width="28" height="20" viewBox="0 0 28 20" fill="none">
+            <rect x="2" y="6" width="24" height="12" rx="3" fill="#2a2a00" stroke="#ffd600" stroke-width="1.5" stroke-dasharray="4 2"/>
+            <circle cx="7" cy="12" r="2" fill="#ffd600" opacity="0.7"/>
+            <circle cx="14" cy="12" r="2" fill="#ffd600" opacity="0.7"/>
+            <circle cx="21" cy="12" r="2" fill="#ffd600" opacity="0.7"/>
+            <line x1="7" y1="6" x2="5" y2="2" stroke="#ffd600" stroke-width="1.5" opacity="0.7"/>
+            <line x1="14" y1="6" x2="14" y2="2" stroke="#ffd600" stroke-width="1.5" opacity="0.7"/>
+            <line x1="21" y1="6" x2="23" y2="2" stroke="#ffd600" stroke-width="1.5" opacity="0.7"/>
+          </svg>
+          R2 – BACKUP
+        </div>
+        <div class="node-label">Router 2 (Standby)</div>
+        <div class="port-badge yellow">WAN: ISP-2 | LAN → Core</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Connector between Internet and MDF -->
+  <div style="display:flex;justify-content:center;gap:80px;background:linear-gradient(to bottom,#0d2a1a,#0d1f35);padding:8px 0;border-left:1.5px solid #1a3a5a;border-right:1.5px solid #1a3a5a;">
+    <div style="display:flex;gap:6px;">
+      <div style="width:2px;height:24px;background:var(--green);"></div>
+      <div style="width:2px;height:24px;background:var(--green);"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+      <div style="font-family:'Share Tech Mono',monospace;font-size:0.55rem;color:#445;letter-spacing:0.1em;">UPLINKS TO CORE</div>
+      <div style="display:flex;gap:6px;">
+        <div style="width:2px;height:16px;background:var(--accent);"></div>
+        <div style="width:2px;height:16px;background:var(--accent);"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:6px;">
+      <div style="width:2px;height:24px;background:var(--yellow);opacity:0.7;"></div>
+      <div style="width:2px;height:24px;background:var(--yellow);opacity:0.7;"></div>
+    </div>
+  </div>
+
+  <!-- ═══ MDF LAYER ═══ -->
+  <div class="layer-mdf">
+    <div class="layer-label">MDF – Main Distribution Frame (Warehouse)</div>
+
+    <!-- Core Switches -->
+    <div class="section-title">── Collapsed Core Layer ──</div>
+    <div class="core-row">
+      <div class="node">
+        <div class="node-box core-sw">
+          <div class="status-dot"></div>
+          <svg width="32" height="18" viewBox="0 0 32 18" fill="none">
+            <rect x="1" y="3" width="30" height="12" rx="2" fill="#071a30" stroke="#00c8ff" stroke-width="1.5"/>
+            <rect x="4" y="7" width="4" height="4" rx="1" fill="#00c8ff" opacity="0.8"/>
+            <rect x="10" y="7" width="4" height="4" rx="1" fill="#00c8ff" opacity="0.8"/>
+            <rect x="16" y="7" width="4" height="4" rx="1" fill="#00c8ff" opacity="0.5"/>
+            <rect x="22" y="7" width="4" height="4" rx="1" fill="#00c8ff" opacity="0.5"/>
+          </svg>
+          CORE-SW-1
+        </div>
+        <div class="node-label">Core Switch 1 (Active)</div>
+        <div class="port-badge">24-port L3 · VLAN · STP Root</div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:0.58rem;color:#1a3a5a;letter-spacing:0.1em;">LACP TRUNK</div>
+        <div style="display:flex;align-items:center;gap:0;">
+          <div style="width:40px;height:2px;background:var(--accent);"></div>
+          <div style="width:40px;height:2px;background:var(--accent);margin-top:5px;margin-left:-40px;"></div>
+        </div>
+        <div style="display:flex;gap:2px;margin-top:-6px;">
+          <div style="width:40px;height:2px;background:var(--accent);"></div>
+          <div style="width:0;height:0;border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:6px solid var(--accent);margin-left:-2px;"></div>
+        </div>
+      </div>
+
+      <div class="node">
+        <div class="node-box core-sw" style="border-style:dashed;">
+          <div class="status-dot backup"></div>
+          <svg width="32" height="18" viewBox="0 0 32 18" fill="none">
+            <rect x="1" y="3" width="30" height="12" rx="2" fill="#071a30" stroke="#00c8ff" stroke-width="1.5" stroke-dasharray="4 2"/>
+            <rect x="4" y="7" width="4" height="4" rx="1" fill="#00c8ff" opacity="0.4"/>
+            <rect x="10" y="7" width="4" height="4" rx="1" fill="#00c8ff" opacity="0.4"/>
+            <rect x="16" y="7" width="4" height="4" rx="1" fill="#00c8ff" opacity="0.4"/>
+            <rect x="22" y="7" width="4" height="4" rx="1" fill="#00c8ff" opacity="0.4"/>
+          </svg>
+          CORE-SW-2
+        </div>
+        <div class="node-label">Core Switch 2 (Standby)</div>
+        <div class="port-badge">24-port L3 · VLAN · STP Backup</div>
+      </div>
+    </div>
+
+    <!-- Access Switches MDF -->
+    <div style="display:flex;gap:10px;align-items:center;margin-top:4px;">
+      <div style="height:1px;flex:1;background:linear-gradient(to right, transparent, #1a3a5a);"></div>
+      <div class="section-title" style="margin-bottom:0;">── Access Layer – MDF (4 Switches) ──</div>
+      <div style="height:1px;flex:1;background:linear-gradient(to left, transparent, #1a3a5a);"></div>
+    </div>
+
+    <div class="access-row">
+      <!-- 4 access switches -->
+      <div class="node">
+        <div class="node-box access-sw">
+          <svg width="28" height="16" viewBox="0 0 28 16" fill="none">
+            <rect x="1" y="2" width="26" height="11" rx="2" fill="#1a1000" stroke="#ffd600" stroke-width="1.2"/>
+            <circle cx="6" cy="7" r="1.5" fill="#ffd600"/>
+            <circle cx="10" cy="7" r="1.5" fill="#ffd600"/>
+            <circle cx="14" cy="7" r="1.5" fill="#ffd600" opacity="0.5"/>
+            <circle cx="18" cy="7" r="1.5" fill="#ffd600" opacity="0.5"/>
+            <circle cx="22" cy="7" r="1.5" fill="#ffd600" opacity="0.3"/>
+          </svg>
+          ACC-SW-1
+        </div>
+        <div class="node-label">Access SW 1</div>
+        <div class="node-sublabel">Workbenches – Zone A</div>
+        <div class="port-badge yellow">24-port · ~25 ports used</div>
+      </div>
+
+      <div class="node">
+        <div class="node-box access-sw">
+          <svg width="28" height="16" viewBox="0 0 28 16" fill="none">
+            <rect x="1" y="2" width="26" height="11" rx="2" fill="#1a1000" stroke="#ffd600" stroke-width="1.2"/>
+            <circle cx="6" cy="7" r="1.5" fill="#ffd600"/>
+            <circle cx="10" cy="7" r="1.5" fill="#ffd600"/>
+            <circle cx="14" cy="7" r="1.5" fill="#ffd600" opacity="0.5"/>
+            <circle cx="18" cy="7" r="1.5" fill="#ffd600" opacity="0.5"/>
+            <circle cx="22" cy="7" r="1.5" fill="#ffd600" opacity="0.3"/>
+          </svg>
+          ACC-SW-2
+        </div>
+        <div class="node-label">Access SW 2</div>
+        <div class="node-sublabel">Workbenches – Zone B</div>
+        <div class="port-badge yellow">24-port · ~25 ports used</div>
+      </div>
+
+      <div class="node">
+        <div class="node-box access-sw">
+          <svg width="28" height="16" viewBox="0 0 28 16" fill="none">
+            <rect x="1" y="2" width="26" height="11" rx="2" fill="#1a1000" stroke="#ffd600" stroke-width="1.2"/>
+            <circle cx="6" cy="7" r="1.5" fill="#ffd600"/>
+            <circle cx="10" cy="7" r="1.5" fill="#ffd600"/>
+            <circle cx="14" cy="7" r="1.5" fill="#ffd600" opacity="0.6"/>
+            <circle cx="18" cy="7" r="1.5" fill="#ffd600" opacity="0.3"/>
+            <circle cx="22" cy="7" r="1.5" fill="#ffd600" opacity="0.3"/>
+          </svg>
+          ACC-SW-3
+        </div>
+        <div class="node-label">Access SW 3</div>
+        <div class="node-sublabel">Servers / AD / SQL</div>
+        <div class="port-badge yellow">24-port · ~15 ports used</div>
+      </div>
+
+      <div class="node">
+        <div class="node-box access-sw">
+          <svg width="28" height="16" viewBox="0 0 28 16" fill="none">
+            <rect x="1" y="2" width="26" height="11" rx="2" fill="#1a1000" stroke="#ffd600" stroke-width="1.2"/>
+            <circle cx="6" cy="7" r="1.5" fill="#ffd600"/>
+            <circle cx="10" cy="7" r="1.5" fill="#ffd600"/>
+            <circle cx="14" cy="7" r="1.5" fill="#ffd600" opacity="0.6"/>
+            <circle cx="18" cy="7" r="1.5" fill="#ffd600" opacity="0.4"/>
+            <circle cx="22" cy="7" r="1.5" fill="#ffd600" opacity="0.2"/>
+          </svg>
+          ACC-SW-4
+        </div>
+        <div class="node-label">Access SW 4</div>
+        <div class="node-sublabel">Uplink to IDF / Spare</div>
+        <div class="port-badge yellow">24-port · Uplink + reserve</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Connector between MDF and IDF -->
+  <div style="display:flex;justify-content:center;background:linear-gradient(to bottom,#0d1f35,#1a1230);padding:6px 0;border-left:1.5px solid #3a1a5a;border-right:1.5px solid #3a1a5a;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+      <div style="font-family:'Share Tech Mono',monospace;font-size:0.55rem;color:#3a2a5a;letter-spacing:0.12em;">INTER-SUITE TRUNK CABLE (Cat6A / Fiber)</div>
+      <div style="display:flex;gap:8px;">
+        <div style="width:2px;height:20px;background:#b57aff;opacity:0.7;"></div>
+        <div style="width:2px;height:20px;background:#b57aff;opacity:0.4;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ IDF LAYER ═══ -->
+  <div class="layer-idf">
+    <div class="layer-label">IDF – Intermediate Distribution Frame (Storefront Suite)</div>
+
+    <div class="access-row">
+      <div class="node">
+        <div class="node-box access-sw-idf">
+          <svg width="28" height="16" viewBox="0 0 28 16" fill="none">
+            <rect x="1" y="2" width="26" height="11" rx="2" fill="#1a0a28" stroke="#b57aff" stroke-width="1.2"/>
+            <circle cx="6" cy="7" r="1.5" fill="#b57aff"/>
+            <circle cx="10" cy="7" r="1.5" fill="#b57aff"/>
+            <circle cx="14" cy="7" r="1.5" fill="#b57aff" opacity="0.6"/>
+            <circle cx="18" cy="7" r="1.5" fill="#b57aff" opacity="0.4"/>
+            <circle cx="22" cy="7" r="1.5" fill="#b57aff" opacity="0.3"/>
+          </svg>
+          IDF-SW-1
+        </div>
+        <div class="node-label">IDF Access SW 1</div>
+        <div class="node-sublabel">Desktops + check-in tablets</div>
+        <div class="port-badge purple">24-port · ~15 ports used</div>
+      </div>
+
+      <div class="node">
+        <div class="node-box access-sw-idf">
+          <svg width="28" height="16" viewBox="0 0 28 16" fill="none">
+            <rect x="1" y="2" width="26" height="11" rx="2" fill="#1a0a28" stroke="#b57aff" stroke-width="1.2"/>
+            <circle cx="6" cy="7" r="1.5" fill="#b57aff"/>
+            <circle cx="10" cy="7" r="1.5" fill="#b57aff"/>
+            <circle cx="14" cy="7" r="1.5" fill="#b57aff" opacity="0.5"/>
+            <circle cx="18" cy="7" r="1.5" fill="#b57aff" opacity="0.3"/>
+            <circle cx="22" cy="7" r="1.5" fill="#b57aff" opacity="0.2"/>
+          </svg>
+          IDF-SW-2
+        </div>
+        <div class="node-label">IDF Access SW 2</div>
+        <div class="node-sublabel">PoE · APs + spare ports</div>
+        <div class="port-badge purple">24-port PoE · WiFi APs</div>
+      </div>
+    </div>
+
+    <!-- End devices -->
+    <div style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center;margin-top:8px;">
+      <div style="font-family:'Share Tech Mono',monospace;font-size:0.62rem;color:#6b5a8a;padding:4px 10px;background:#100820;border:1px solid #2a1a4a;border-radius:4px;">
+        🖥️ Desktops (few)
+      </div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:0.62rem;color:#6b5a8a;padding:4px 10px;background:#100820;border:1px solid #2a1a4a;border-radius:4px;">
+        📱 Tablets ~30 (WiFi + Ethernet check-in)
+      </div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:0.62rem;color:#6b5a8a;padding:4px 10px;background:#100820;border:1px solid #2a1a4a;border-radius:4px;">
+        📡 Wireless APs (for mobile devices)
+      </div>
+    </div>
+  </div>
+
+</div><!-- end diagram-wrapper -->
+
+<!-- ═══ LEGEND ═══ -->
+<div class="legend">
+  <div class="legend-item">
+    <div class="legend-line" style="background:var(--green);"></div>
+    Primary Path (Active)
+  </div>
+  <div class="legend-item">
+    <div class="legend-line" style="background:var(--yellow);border-top:2px dashed var(--yellow);height:0;"></div>
+    Backup Path (Standby)
+  </div>
+  <div class="legend-item">
+    <div class="legend-line" style="background:var(--accent);"></div>
+    Core Uplinks / Trunks
+  </div>
+  <div class="legend-item">
+    <div class="legend-line" style="background:#b57aff;"></div>
+    IDF Inter-Suite Link
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background:var(--green);box-shadow:0 0 5px var(--green);"></div>
+    Active / Primary Device
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background:var(--yellow);box-shadow:0 0 5px var(--yellow);"></div>
+    Standby / Backup Device
+  </div>
+</div>
+
+<!-- ═══ FLOORPLAN ═══ -->
+<div class="floorplan-section">
+  <div class="floorplan-title">// Floorplan Layout – Cable Installation Reference</div>
+  <div class="floorplan">
+
+    <!-- WAREHOUSE (MDF) -->
+    <div class="floor-suite warehouse">
+      <div class="suite-label">Suite 2 – Warehouse (MDF Location)</div>
+      <div class="floor-item"><div class="floor-icon" style="background:#2a5a3a;"></div>Primary Internet entry point (R1)</div>
+      <div class="floor-item"><div class="floor-icon" style="background:#3a5a1a;"></div>Backup Internet entry point (R2)</div>
+      <div class="floor-item"><div class="floor-icon" style="background:#1a3a5a;"></div>Core-SW-1 + Core-SW-2 (collapsed core)</div>
+      <div class="floor-item"><div class="floor-icon" style="background:#3a3a1a;"></div>4× Access Switches (ACC-SW-1 to 4)</div>
+      <div class="floor-item"><div class="floor-icon" style="background:#2a1a4a;"></div>Windows AD + SQL DB Servers</div>
+      <div class="floor-item"><div class="floor-icon" style="background:#3a2a1a;"></div>Workbenches (~many stations, check-in tablet/each)</div>
+
+      <div class="rack-box">
+        <div class="rack-title">📦 MDF RACK CONTENTS</div>
+        <div class="rack-item green">R1 (Primary Router)</div>
+        <div class="rack-item yellow">R2 (Backup Router)</div>
+        <div class="rack-item blue">Core-SW-1 (L3, Active)</div>
+        <div class="rack-item blue">Core-SW-2 (L3, Standby)</div>
+        <div class="rack-item yellow">ACC-SW-1 (Workbenches Zone A)</div>
+        <div class="rack-item yellow">ACC-SW-2 (Workbenches Zone B)</div>
+        <div class="rack-item yellow">ACC-SW-3 (Servers)</div>
+        <div class="rack-item yellow">ACC-SW-4 (IDF Uplink + Spare)</div>
+        <div class="rack-item green">Patch Panels · UPS · PDU</div>
+      </div>
+
+      <div class="cable-note">* Cat6A horizontal runs from rack to workbenches &amp; server area<br>* Fiber recommended for core-to-core and MDF-to-IDF trunk</div>
+    </div>
+
+    <!-- STOREFRONT (IDF) -->
+    <div class="floor-suite storefront">
+      <div class="suite-label">Suite 1 – Storefront (IDF Location)</div>
+      <div class="floor-item"><div class="floor-icon" style="background:#3a1a5a;"></div>Fiber/Cat6A trunk from MDF (ACC-SW-4)</div>
+      <div class="floor-item"><div class="floor-icon" style="background:#2a1a4a;"></div>IDF-SW-1 – Desktops + wired tablets</div>
+      <div class="floor-item"><div class="floor-icon" style="background:#2a1a4a;"></div>IDF-SW-2 – PoE for Wireless APs</div>
+      <div class="floor-item"><div class="floor-icon" style="background:#1a1a3a;"></div>~30 tablets (WiFi via APs + some wired)</div>
+      <div class="floor-item"><div class="floor-icon" style="background:#1a2a1a;"></div>Front desk workstations</div>
+
+      <div class="rack-box" style="background:#0d0818;border-color:#2a1a4a;">
+        <div class="rack-title" style="color:#b57aff;">📦 IDF RACK CONTENTS</div>
+        <div class="rack-item" style="border-color:#b57aff;color:#9a6acf;">IDF-SW-1 (Access, 24-port)</div>
+        <div class="rack-item" style="border-color:#b57aff;color:#9a6acf;">IDF-SW-2 (Access, 24-port PoE)</div>
+        <div class="rack-item" style="border-color:#5a5a9a;color:#7a7aaf;">Patch Panel + UPS</div>
+        <div class="rack-item" style="border-color:#5a5a9a;color:#7a7aaf;">Wireless APs (ceiling mounted)</div>
+      </div>
+
+      <div class="cable-note">* Cat6A drops to desks and wall ports<br>* PoE APs cover tablet WiFi in showroom area<br>* ~30 network ports needed (≈26 used + spare)</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Port Summary -->
+<div style="max-width:1100px;margin:16px auto 0;padding:14px 20px;background:var(--panel);border:1px solid var(--border);border-radius:8px;display:flex;gap:32px;flex-wrap:wrap;">
+  <div>
+    <div style="font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--accent);letter-spacing:0.12em;margin-bottom:6px;">PORT SUMMARY</div>
+    <div style="font-family:'Share Tech Mono',monospace;font-size:0.68rem;color:var(--dim);">Warehouse (MDF): <span style="color:var(--yellow);">~100 ports</span> across ACC-SW-1 to 4</div>
+    <div style="font-family:'Share Tech Mono',monospace;font-size:0.68rem;color:var(--dim);">Storefront (IDF): <span style="color:#b57aff;">~30 ports</span> across IDF-SW-1 &amp; 2</div>
+    <div style="font-family:'Share Tech Mono',monospace;font-size:0.68rem;color:var(--dim);">Total switched ports: <span style="color:var(--green);">192 (8 × 24-port switches)</span></div>
+  </div>
+  <div>
+    <div style="font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--accent);letter-spacing:0.12em;margin-bottom:6px;">DESIGN TYPE</div>
+    <div style="font-family:'Share Tech Mono',monospace;font-size:0.68rem;color:var(--dim);">Topology: <span style="color:var(--green);">Collapsed Core (3-tier → 2-tier)</span></div>
+    <div style="font-family:'Share Tech Mono',monospace;font-size:0.68rem;color:var(--dim);">Redundancy: <span style="color:var(--yellow);">Dual ISP + Dual Core (STP/HSRP)</span></div>
+    <div style="font-family:'Share Tech Mono',monospace;font-size:0.68rem;color:var(--dim);">Cabling: <span style="color:var(--green);">Cat6A horizontal · Fiber backbone</span></div>
+  </div>
+</div>
+
+</body>
+</html>
