@@ -41,13 +41,12 @@
     margin-bottom: 24px;
     font-family: 'Share Tech Mono', monospace;
   }
-    h1
-    {
+  h1 {
     display: flex;
     justify-content: center;
     align-items: center;
 }
-.subtitle  {
+  .subtitle  {
     display: flex;
     justify-content: center;
     align-items: center;
