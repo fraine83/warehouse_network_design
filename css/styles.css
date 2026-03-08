@@ -41,6 +41,17 @@
     margin-bottom: 24px;
     font-family: 'Share Tech Mono', monospace;
   }
+    h1
+    {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.subtitle  {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
   .diagram-wrapper {
     display: flex;
