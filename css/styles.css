@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:wght@300;400;600;700&display=swap');
+ @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:wght@300;400;600;700&display=swap');
 
 :root {
     --bg: #0a0e1a;
@@ -12,7 +12,7 @@
     --dim: #6b7a99;
     --mdf-bg: #0d1f35;
     --idf-bg: #1a1230;
-    --internet-bg: #0d2a1a;
+    --internet-bg: #0d301c;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -53,7 +53,7 @@
   /* ── INTERNET LAYER ── */
   .layer-internet {
     background: var(--internet-bg);
-    border: 1.5px solid #1a4a2a;
+    border: 1.5px solid #24693d;
     border-radius: 12px 12px 0 0;
     padding: 20px 24px 16px;
     display: flex;
@@ -72,7 +72,7 @@
     margin-bottom: 4px;
   }
 
-  .layer-internet .layer-label { background: #0d3a1e; color: var(--green); border: 1px solid #1a5a2e; }
+  .layer-internet .layer-label { background: #2e5c3f; color: var(--green); border: 1px solid #1a5a2e; }
   .layer-mdf .layer-label { background: #0a1e35; color: var(--accent); border: 1px solid #1a3a5a; }
   .layer-idf .layer-label { background: #1a0a2e; color: #b57aff; border: 1px solid #3a1a5a; }
 
@@ -155,6 +155,8 @@
   }
 
   .node:hover { transform: translateY(-2px); }
+  .node-box:hover { border-color: var(--text);}
+  .node.node-box:hover { border-color: var(--text);}
 
   .node-box {
     border-radius: 8px;
@@ -183,7 +185,7 @@
 
   .node-sublabel {
     font-size: 0.6rem;
-    color: #445;
+    color: rgb(82, 82, 94);
     font-family: 'Share Tech Mono', monospace;
     text-align: center;
   }
@@ -417,4 +419,4 @@
     font-size: 0.6rem;
     color: #445566;
     font-style: italic;
-  }
+  }  
